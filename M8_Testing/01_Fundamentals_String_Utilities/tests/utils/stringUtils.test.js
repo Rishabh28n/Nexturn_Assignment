@@ -26,6 +26,12 @@ describe("String Utilities", () => {
       expect(capitalize("123abc")).toBe("123abc");
       expect(capitalize("!hello")).toBe("!hello");
     });
+
+    // New test: Check for null and undefined values
+    test("should handle null and undefined gracefully", () => {
+      expect(capitalize(null)).toBe("");
+      expect(capitalize(undefined)).toBe("");
+    });
   });
 
   describe("reverseString()", () => {
@@ -55,6 +61,12 @@ describe("String Utilities", () => {
     test("should handle strings with numbers and special characters", () => {
       expect(reverseString("hello123!")).toBe("!321olleh");
       expect(reverseString("12345")).toBe("54321");
+    });
+
+    // New test: Check for null and undefined values
+    test("should handle null and undefined gracefully", () => {
+      expect(() => reverseString(null)).toThrow(TypeError);
+      expect(() => reverseString(undefined)).toThrow(TypeError);
     });
   });
 });

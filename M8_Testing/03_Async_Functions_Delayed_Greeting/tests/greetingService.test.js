@@ -101,4 +101,13 @@ describe("delayedGreeting", () => {
     const result = await promise;
     expect(result).toBe("Hello, Frank!");
   });
+
+  test("should reject for negative delay", async () => {
+    // Arrange
+    const name = "Grace";
+    const delay = -1000;
+
+    // Act & Assert
+    await expect(delayedGreeting(name, delay)).rejects.toThrow("Delay cannot be negative");
+  });
 });

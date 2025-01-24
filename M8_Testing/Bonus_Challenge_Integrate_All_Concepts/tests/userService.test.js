@@ -43,7 +43,7 @@ describe("fetchAndDisplayUser", () => {
 
     // Assert
     expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
-    expect(element.textContent).toBe(errorMessage);
+    expect(element.textContent).toBe(`Error: ${errorMessage}`);
   });
 
   test("should display error when user data is invalid", async () => {
@@ -57,7 +57,7 @@ describe("fetchAndDisplayUser", () => {
 
     // Assert
     expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
-    expect(element.textContent).toBe("Invalid user data");
+    expect(element.textContent).toBe("Error: Invalid user data");
   });
 
   test("should handle network timeout", async () => {
@@ -75,7 +75,7 @@ describe("fetchAndDisplayUser", () => {
 
     // Assert
     expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
-    expect(element.textContent).toBe("Network timeout");
+    expect(element.textContent).toBe("Error: Network timeout");
   });
 
   test("should handle multiple consecutive calls", async () => {
@@ -86,13 +86,19 @@ describe("fetchAndDisplayUser", () => {
       .mockRejectedValueOnce(new Error("API Error"))
       .mockResolvedValueOnce({ name: "Jane Doe" });
 
-    // Act
+    // Act and Assert for first call
     await fetchAndDisplayUser(mockApiService, userId, element);
-    await fetchAndDisplayUser(mockApiService, userId, element);
-    await fetchAndDisplayUser(mockApiService, userId, element);
+    expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
+    expect(element.textContent).toBe("Hello, John Doe");
 
-    // Assert
-    expect(mockApiService.getUser).toHaveBeenCalledTimes(3);
+    // Act and Assert for second call (API Error)
+    await fetchAndDisplayUser(mockApiService, userId, element);
+    expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
+    expect(element.textContent).toBe("Error: API Error");
+
+    // Act and Assert for third call
+    await fetchAndDisplayUser(mockApiService, userId, element);
+    expect(mockApiService.getUser).toHaveBeenCalledWith(userId);
     expect(element.textContent).toBe("Hello, Jane Doe");
   });
 });
